@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 
 public abstract class BaseAsyncTask extends AsyncTask {
 
-    interface OnPostExecuteListener {
+    public interface OnPostExecuteListener {
         void onPostExecute(Object result);
     }
 
