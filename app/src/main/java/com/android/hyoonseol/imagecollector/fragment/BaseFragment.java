@@ -11,10 +11,8 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 
 import com.android.hyoonseol.imagecollector.R;
-import com.android.hyoonseol.imagecollector.SearchAdapter;
-import com.android.hyoonseol.imagecollector.api.BaseApi;
+import com.android.hyoonseol.imagecollector.adapter.SearchAdapter;
 import com.android.hyoonseol.imagecollector.model.ICModel;
-import com.android.hyoonseol.imagecollector.model.Image;
 import com.android.hyoonseol.imagecollector.util.ICUtils;
 
 import java.util.List;
@@ -23,7 +21,7 @@ import java.util.List;
  * Created by Administrator on 2016-08-03.
  */
 
-public abstract class BaseFragment extends Fragment implements SearchAdapter.OnImgClickListener, SearchAdapter.OnImgLongClickListener{
+public abstract class BaseFragment extends Fragment implements IFragment, SearchAdapter.OnImgClickListener, SearchAdapter.OnImgLongClickListener{
 
     // TODO.
     // 1. 프로그래스바
@@ -61,12 +59,14 @@ public abstract class BaseFragment extends Fragment implements SearchAdapter.OnI
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    protected void showImageList(List<ICModel> ICModelList) {
+    protected void showImageList(List<ICModel> ICModelList, boolean isRefresh) {
         if (mSearchAdater == null) {
             mSearchAdater = new SearchAdapter(getActivity(), ICModelList, this, this);
             mRecyclerView.setAdapter(mSearchAdater);
         } else {
-            ICModelList = ICUtils.concatList(mSearchAdater.getList(), ICModelList);
+            if (!isRefresh) {
+                ICModelList = ICUtils.concatList(mSearchAdater.getList(), ICModelList);
+            }
             mSearchAdater.setList(ICModelList);
             mSearchAdater.notifyDataSetChanged();
         }

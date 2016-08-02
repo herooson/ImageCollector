@@ -6,14 +6,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.android.hyoonseol.imagecollector.R;
-import com.android.hyoonseol.imagecollector.SearchAdapter;
+import com.android.hyoonseol.imagecollector.adapter.SearchAdapter;
 import com.android.hyoonseol.imagecollector.helper.SearchParser;
 import com.android.hyoonseol.imagecollector.model.Image;
 import com.android.hyoonseol.imagecollector.util.ICUtils;
 import com.android.hyoonseol.imagecollector.view.ICImageView;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.List;
 

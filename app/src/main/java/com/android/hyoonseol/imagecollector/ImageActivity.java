@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.android.hyoonseol.imagecollector.fragment.IFragment;
 import com.android.hyoonseol.imagecollector.util.ICUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
@@ -24,6 +26,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by Administrator on 2016-07-29.
@@ -36,12 +40,13 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
     public static final String EXTRA_IS_LOCAL = "is_local";
 
     private Toolbar mToolbar;
-    private ImageView mImage;
+    private PhotoView mImage;
     private View mLayMenu;
     private Button mBtn;
 
     private boolean mIsLocal;
     private String mTitle;
+    private String mImgUrl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,33 +54,31 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 
         setContentView(R.layout.activity_image);
 
-        String imgUrl = null;
         if (getIntent() != null) {
             mTitle = getIntent().getStringExtra(EXTRA_TITLE);
-            imgUrl = getIntent().getStringExtra(EXTRA_IMG_URL);
+            mImgUrl = getIntent().getStringExtra(EXTRA_IMG_URL);
             mIsLocal = getIntent().getBooleanExtra(EXTRA_IS_LOCAL, false);
         }
         setViews();
-        setImage(mTitle, imgUrl);
+        setImage();
     }
 
     private void setViews() {
         mToolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(mToolbar);
 
-        mImage = (ImageView)findViewById(R.id.iv_image);
+        mImage = (PhotoView) findViewById(R.id.pv_image);
         mLayMenu = findViewById(R.id.rl_menu);
         mBtn = (Button)findViewById(R.id.btn_menu);
 
         setMenu();
 
-        mImage.setOnClickListener(this);
         mBtn.setOnClickListener(this);
     }
 
-    private void setImage(String title, String mImgUrl) {
-        if (title != null && !TextUtils.isEmpty(title)) {
-            mToolbar.setTitle(title);
+    private void setImage() {
+        if (mTitle != null && !TextUtils.isEmpty(mTitle)) {
+            mToolbar.setTitle(mTitle);
         }
         if (mImgUrl != null && !TextUtils.isEmpty(mImgUrl)) {
             Glide.with(this).load(mImgUrl).into(mImage);
@@ -94,27 +97,42 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         int id = view.getId();
 
-        if (id == R.id.iv_image) {
-            if (mLayMenu.getVisibility() == View.GONE) {
-                mLayMenu.setVisibility(View.VISIBLE);
-            } else {
-                mLayMenu.setVisibility(View.GONE);
-            }
-        } else if (id == R.id.btn_menu) {
+        if (id == R.id.btn_menu) {
             if (mIsLocal) {
-                //TODO delete
+                if (deleteBitmap(mImgUrl)) {
+                    setResult(IFragment.RESULT_LOCAL_DELETE);
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "이미지 삭제를 실패하였습니다." , Toast.LENGTH_SHORT).show();
+                }
             } else {
-                saveBitmap(((GlideBitmapDrawable)mImage.getDrawable()).getBitmap(), mTitle);
+                if (saveBitmap(((GlideBitmapDrawable)mImage.getDrawable()).getBitmap(), mTitle)) {
+                    Toast.makeText(getApplicationContext(), "이미지가 저장되었습니다." , Toast.LENGTH_SHORT).show();
+                    setResult(IFragment.RESULT_LOCAL_SAVE);
+                } else {
+                    Toast.makeText(getApplicationContext(), "이미지 저장을 실패하였습니다." , Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
 
-    private void saveBitmap(Bitmap bitmap, String title) {
+    private boolean deleteBitmap(String path) {
+        boolean result = false;
+        File file = new File(path);
+        if (file.exists()) {
+            result = file.delete();
+        }
+        return result;
+    }
+
+    private boolean saveBitmap(Bitmap bitmap, String title) {
+        boolean result = false;
         FileOutputStream out = null;
         try {
             File file = new File(ICUtils.getImageFolderPath() + "/" + ICUtils.removeHtmlTag(title) + ".jpg");
             out = new FileOutputStream(file.getAbsolutePath());
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            result = true;
         } catch (FileNotFoundException fe) {
             fe.printStackTrace();
         } catch(IOException ioe) {
@@ -128,5 +146,6 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
                 }
             }
         }
+        return result;
     }
 }

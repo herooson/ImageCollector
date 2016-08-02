@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolBar"
@@ -10,26 +11,29 @@
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"/>
 
-    <ImageView
-        android:id="@+id/iv_image"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerInside"
-        android:background="@android:color/white"/>
+        android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rl_menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:visibility="gone">
+        <uk.co.senab.photoview.PhotoView
+            android:id="@+id/pv_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:background="@android:color/white"/>
 
-        <Button
-            android:id="@+id/btn_menu"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rl_menu"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            android:layout_gravity="bottom">
 
-    </RelativeLayout>
+            <Button
+                android:id="@+id/btn_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
 
-</FrameLayout>
+        </RelativeLayout>
+    </FrameLayout>
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.android.hyoonseol.imagecollector;
+package com.android.hyoonseol.imagecollector.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.hyoonseol.imagecollector.R;
 import com.android.hyoonseol.imagecollector.model.ICModel;
 import com.android.hyoonseol.imagecollector.model.Image;
 import com.android.hyoonseol.imagecollector.model.ViewType;

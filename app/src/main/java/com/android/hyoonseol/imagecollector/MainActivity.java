@@ -1,5 +1,6 @@
 package com.android.hyoonseol.imagecollector;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,11 +9,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.android.hyoonseol.imagecollector.fragment.DirFragment;
 import com.android.hyoonseol.imagecollector.fragment.SearchFragment;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
@@ -46,19 +50,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
+
+        private Fragment[] mFragmentArray = new Fragment[] {new SearchFragment(), new DirFragment()};
+
         public PagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int i) {
-            Fragment fragment = null;
-
-            if (i == 0) {
-                fragment = new SearchFragment();
-            } else if (i == 1) {
-                fragment = new DirFragment();
-            }
+            Fragment fragment = mFragmentArray[i];
 
             if (fragment != null) {
                 Bundle args = new Bundle();
@@ -67,20 +68,36 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
+        public Fragment[] getFragmentArray() {
+            return mFragmentArray;
+        }
+
         @Override
         public int getCount() {
-            return 2;
+            return mFragmentArray.length;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position == 0) {
+            Fragment fragment = mFragmentArray[position];
+            if (fragment instanceof SearchFragment) {
                 return "이미지 리스트";
-            } else if (position == 1) {
+            } else if (fragment instanceof DirFragment) {
                 return "내 보관함";
             }
             return "";
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult requestCode = " + requestCode + ", resultCode = " + resultCode);
+
+        if (mPagerAdapter != null && mPagerAdapter.getFragmentArray() != null) {
+            for (int i = 0; i < mPagerAdapter.getFragmentArray().length; i++) {
+                mPagerAdapter.getFragmentArray()[i].onActivityResult(requestCode, resultCode, data);
+            }
+        }
+    }
 }

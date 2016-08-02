@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.hyoonseol.imagecollector.ImageActivity;
 import com.android.hyoonseol.imagecollector.R;
@@ -31,6 +33,8 @@ import static android.R.attr.path;
 
 public class DirFragment extends BaseFragment {
 
+    private static final String TAG = "DirFragment";
+
     @Override
     protected void setSortType() {
         mSortType = BaseApi.SORT_DATE;
@@ -44,10 +48,10 @@ public class DirFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadImageFileList();
+        loadImageFileList(false);
     }
 
-    private void loadImageFileList() {
+    private void loadImageFileList(boolean isRefresh) {
         File dir = new File(ICUtils.getImageFolderPath());
         File[] fileArray = dir.listFiles();
 
@@ -58,7 +62,7 @@ public class DirFragment extends BaseFragment {
                 //TODO.
             } else if (mSortType == BaseApi.SORT_DATE) {
                 fileArray = sortDate(fileArray);
-                showImageList(new LocalParser().getICModelList(fileArray, mSortType));
+                showImageList(new LocalParser().getICModelList(fileArray, mSortType), isRefresh);
             } else {
                 showEmptyView();
             }
@@ -81,12 +85,25 @@ public class DirFragment extends BaseFragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult requestCode = " + requestCode + ", resultCode = " + resultCode);
+
+        if (requestCode == REQUEST_IMAGE) {
+            if (resultCode == RESULT_LOCAL_DELETE) {
+                Toast.makeText(getActivity(), "이미지 삭제가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+            loadImageFileList(true);
+        }
+    }
+
+    @Override
     public void onClick(View view, Image image) {
         Intent intent = new Intent(getActivity(), ImageActivity.class);
-        intent.putExtra(ImageActivity.EXTRA_IS_LOCAL, false);
+        intent.putExtra(ImageActivity.EXTRA_IS_LOCAL, true);
         intent.putExtra(ImageActivity.EXTRA_IMG_URL, image.getPath());
         intent.putExtra(ImageActivity.EXTRA_TITLE, image.getTitle());
-        getActivity().startActivity(intent);
+        getActivity().startActivityForResult(intent, REQUEST_IMAGE);
     }
 
     @Override
