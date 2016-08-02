@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_blue_light">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -9,7 +10,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/lay_sort"
+            android:id="@+id/lay_function"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -30,5 +31,14 @@
     <Button
         android:id="@+id/btn_menu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone"/>
+
+    <ViewStub
+        android:id="@+id/vs_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/viewstub_empty"/>
+
 </FrameLayout>

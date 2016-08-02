@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">"ImageCollector "</string>
+
+    <string name="api_key">309919fdfe60e122e56ad354d6940933</string>
 </resources>

@@ -3,18 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- TODO toolbar -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"/>
 
     <ImageView
-        android:id="@+id/img_image"
+        android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerInside"
+        android:background="@android:color/white"/>
 
     <RelativeLayout
-        android:id="@+id/lay_menu"
+        android:id="@+id/rl_menu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/btn_menu"

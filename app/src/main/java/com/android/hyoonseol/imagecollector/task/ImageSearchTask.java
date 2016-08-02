@@ -1,5 +1,6 @@
 package com.android.hyoonseol.imagecollector.task;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.android.hyoonseol.imagecollector.api.BaseApi;
@@ -9,6 +10,12 @@ import com.android.hyoonseol.imagecollector.api.BaseApi;
  */
 
 public class ImageSearchTask extends BaseAsyncTask {
+
+    private Context mContext;
+
+    public ImageSearchTask(Context context) {
+        mContext = context;
+    }
 
     @Override
     protected Object doInBackground(Object[] objects) {
@@ -28,6 +35,6 @@ public class ImageSearchTask extends BaseAsyncTask {
                 sortType = (String)objects[2];
             }
         }
-        return new BaseApi().getSearchResult(keyword, page, sortType);
+        return new BaseApi(mContext).getSearchResult(keyword, page, sortType);
     }
 }

@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.hyoonseol.imagecollector.R;
+import com.android.hyoonseol.imagecollector.model.Image;
 import com.bumptech.glide.Glide;
 
 import org.json.JSONObject;
@@ -34,8 +35,10 @@ public class ICImageView extends LinearLayout {
         mText = (TextView)findViewById(R.id.tv_title);
     }
 
-    public void setData(JSONObject jsonObject) {
-        Glide.with(mContext).load(jsonObject.optString("image")).into(mImage);
-        mText.setText(jsonObject.optString("title"));
+    public void setData(Image image, OnClickListener onClickListener, OnLongClickListener onLongClickListener) {
+        Glide.with(mContext).load(image.getPath()).into(mImage);
+        mText.setText(image.getTitle());
+        setOnClickListener(onClickListener);
+        setOnLongClickListener(onLongClickListener);
     }
 }

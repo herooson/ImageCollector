@@ -3,32 +3,34 @@ package com.android.hyoonseol.imagecollector.model;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2016-07-31.
  */
 
-public class Search {
+public class ICModel {
 
     private ViewType mViewType;
     private String mDate;
-    private JSONArray mJsonArray;
+    private List<Image> mImageList;
 
-    public Search(ViewType viewType, String date) {
+    public ICModel(ViewType viewType, String date) {
         mViewType = viewType;
         mDate = date;
     }
 
-    public Search(ViewType viewType, JSONArray jsonArray) {
+    public ICModel(ViewType viewType, List<Image> imageList) {
         mViewType = viewType;
-        mJsonArray = jsonArray;
+        mImageList = imageList;
     }
 
     public ViewType getViewType() {
         return mViewType;
     }
 
-    public JSONArray getJsonArray() {
-        return mJsonArray;
+    public List<Image> getImageList() {
+        return mImageList;
     }
 
     public String getDate() {

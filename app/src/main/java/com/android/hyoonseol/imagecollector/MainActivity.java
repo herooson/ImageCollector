@@ -74,7 +74,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "OBJECT " + (position + 1);
+            if (position == 0) {
+                return "이미지 리스트";
+            } else if (position == 1) {
+                return "내 보관함";
+            }
+            return "";
         }
     }
 

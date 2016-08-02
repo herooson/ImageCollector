@@ -1,5 +1,10 @@
 package com.android.hyoonseol.imagecollector.api;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.android.hyoonseol.imagecollector.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,10 +26,13 @@ import java.util.Map;
 
 public class BaseApi {
 
-    public static final String DEFAULT_SIZE = "100";
+    private String TAG = "BaseApi";
+
+    public static String DEFAULT_SIZE = "18";
 
     public static final String SORT_ACCU = "accu";
     public static final String SORT_DATE = "date";
+    public static final String SORT_NAME = "name";
 
     private static final int CONN_TIMEOUT = 5000;
     private static final int READ_TIMEOUT = 5000;
@@ -35,14 +43,21 @@ public class BaseApi {
 
     private static final String API_IMG_SEARCH = "https://apis.daum.net/search/image";
 
+    private Context mContext;
+
+    public BaseApi(Context context) {
+        mContext = context;
+    }
+
     //TODO cache
+
+
 
     public JSONObject getSearchResult(String keyword, int page, String sortType) {
         JSONObject jsonObject = new JSONObject();
 
         Map<String, String> params = new HashMap<>();
-        // TODO. api key
-        params.put("apikey", "");
+        params.put("apikey", mContext.getResources().getString(R.string.api_key));
         params.put("q", keyword);
         params.put("result", DEFAULT_SIZE);
         params.put("pageno", page + "");
@@ -58,6 +73,7 @@ public class BaseApi {
     }
 
     private JSONObject getHttpResponse(URL url) {
+        Log.d(TAG, "url = " + url);
         JSONObject jsonObject = null;
 
         try {
@@ -102,11 +118,12 @@ public class BaseApi {
         sb.append(api);
 
         if (params != null && params.size() > 0) {
-            Iterator<String> keys = params.keySet().iterator();
             sb.append("?");
 
-            while( keys.hasNext() ){
-                sb.append(params.get(keys.next()));
+            for( String key : params.keySet() ){
+                sb.append(key);
+                sb.append("=");
+                sb.append(params.get(key));
                 sb.append("&");
             }
             sb.deleteCharAt(sb.length() - 1);
