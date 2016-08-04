@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.android.hyoonseol.imagecollector.R;
-import com.android.hyoonseol.imagecollector.adapter.SearchAdapter;
+import com.android.hyoonseol.imagecollector.adapter.ICAdapter;
 import com.android.hyoonseol.imagecollector.helper.SearchParser;
 import com.android.hyoonseol.imagecollector.model.Image;
 import com.android.hyoonseol.imagecollector.util.ICUtils;
@@ -23,10 +23,10 @@ public class ContentViewHolder extends RecyclerView.ViewHolder {
     private ICImageView mImage1, mImage2, mImage3;
     private int mDisplayWidth;
 
-    private SearchAdapter.OnImgClickListener mImgClickListener;
-    private SearchAdapter.OnImgLongClickListener mImgLongClickListener;
+    private ICAdapter.OnImgClickListener mImgClickListener;
+    private ICAdapter.OnImgLongClickListener mImgLongClickListener;
 
-    public ContentViewHolder(Context context, View itemView, SearchAdapter.OnImgClickListener imgClickListener, SearchAdapter.OnImgLongClickListener imgLongClickListener) {
+    public ContentViewHolder(Context context, View itemView, ICAdapter.OnImgClickListener imgClickListener, ICAdapter.OnImgLongClickListener imgLongClickListener) {
         super(itemView);
         mDisplayWidth = ICUtils.getDisPlayWidth(context);
 

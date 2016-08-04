@@ -9,9 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.Button;
 
 import com.android.hyoonseol.imagecollector.R;
-import com.android.hyoonseol.imagecollector.adapter.SearchAdapter;
+import com.android.hyoonseol.imagecollector.adapter.ICAdapter;
 import com.android.hyoonseol.imagecollector.model.ICModel;
 import com.android.hyoonseol.imagecollector.util.ICUtils;
 
@@ -21,18 +22,17 @@ import java.util.List;
  * Created by Administrator on 2016-08-03.
  */
 
-public abstract class BaseFragment extends Fragment implements IFragment, SearchAdapter.OnImgClickListener, SearchAdapter.OnImgLongClickListener{
-
-    // TODO.
-    // 1. 프로그래스바
+public abstract class BaseFragment extends Fragment implements IFragment, ICAdapter.OnImgClickListener, ICAdapter.OnImgLongClickListener, ICAdapter.OnMoreListener {
 
     protected String mSortType;
 
     private RecyclerView mRecyclerView;
     private ViewStub mEmptyVIewStub;
     private View mEmptyView;
+    private View mProg;
+    private Button mSort;
 
-    private SearchAdapter mSearchAdater;
+    protected ICAdapter mSearchAdater;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +41,12 @@ public abstract class BaseFragment extends Fragment implements IFragment, Search
     }
 
     protected abstract void setSortType();
+
+    protected void setSort(String sort) {
+        if (mSort != null) {
+            mSort.setText(sort);
+        }
+    }
 
     @Nullable
     @Override
@@ -57,11 +63,17 @@ public abstract class BaseFragment extends Fragment implements IFragment, Search
         mRecyclerView = (RecyclerView)view.findViewById(R.id.rv_image);
         mEmptyVIewStub = (ViewStub)view.findViewById(R.id.vs_empty);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mProg = view.findViewById(R.id.pb_loading);
+        mSort = (Button)view.findViewById(R.id.btn_sort);
+    }
+
+    protected void showProgress(int visibility) {
+        mProg.setVisibility(visibility);
     }
 
     protected void showImageList(List<ICModel> ICModelList, boolean isRefresh) {
         if (mSearchAdater == null) {
-            mSearchAdater = new SearchAdapter(getActivity(), ICModelList, this, this);
+            mSearchAdater = new ICAdapter(getActivity(), ICModelList, this, this, this);
             mRecyclerView.setAdapter(mSearchAdater);
         } else {
             if (!isRefresh) {

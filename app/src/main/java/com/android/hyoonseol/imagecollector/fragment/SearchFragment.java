@@ -3,18 +3,18 @@ package com.android.hyoonseol.imagecollector.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.hyoonseol.imagecollector.ImageActivity;
 import com.android.hyoonseol.imagecollector.R;
-import com.android.hyoonseol.imagecollector.api.BaseApi;
+import com.android.hyoonseol.imagecollector.api.ICApi;
 import com.android.hyoonseol.imagecollector.helper.SearchParser;
 import com.android.hyoonseol.imagecollector.model.Image;
 import com.android.hyoonseol.imagecollector.task.BaseAsyncTask;
 import com.android.hyoonseol.imagecollector.task.ImageSearchTask;
+import com.android.hyoonseol.imagecollector.util.Log;
 
 import org.json.JSONObject;
 
@@ -28,10 +28,12 @@ public class SearchFragment extends BaseFragment {
 
     private ImageSearchTask mImageSearchTask;
     private int mPage;
+    private String mQuery;
 
     @Override
     protected void setSortType() {
-        mSortType = BaseApi.SORT_ACCU;
+        mSortType = ICApi.SORT_ACCU;
+        setSort("추천순");
     }
 
     @Override
@@ -43,13 +45,16 @@ public class SearchFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SearchView searchView = (SearchView)view.findViewById(R.id.sv_search);
+        final SearchView searchView = (SearchView)view.findViewById(R.id.sv_search);
         searchView.setFocusable(true);
+        searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                showProgress(View.VISIBLE);
                 mPage = 1;
-                executeSearch(query);
+                mQuery = query;
+                executeSearch(true);
                 return false;
             }
             @Override
@@ -59,7 +64,7 @@ public class SearchFragment extends BaseFragment {
         });
     }
 
-    private void executeSearch(String keyword) {
+    private void executeSearch(final boolean isRefresh) {
         if (mImageSearchTask != null) {
             mImageSearchTask.cancel(true);
         }
@@ -67,6 +72,7 @@ public class SearchFragment extends BaseFragment {
         mImageSearchTask.setOnPostExecuteListener(new BaseAsyncTask.OnPostExecuteListener() {
             @Override
             public void onPostExecute(Object result) {
+                showProgress(View.GONE);
                 if (result == null || !(result instanceof JSONObject)) {
                     showEmptyView();
                 } else {
@@ -76,14 +82,32 @@ public class SearchFragment extends BaseFragment {
                             && jsonObject.optJSONObject("channel").optJSONArray("item") != null
                             && jsonObject.optJSONObject("channel").optJSONArray("item").length() > 0) {
 
-                        showImageList(new SearchParser().getICModelList(jsonObject.optJSONObject("channel").optJSONArray("item"), mSortType), false);
+                        boolean isLast = false;
+                        if (jsonObject.optJSONObject("channel").optString("pageCount") != null) {
+                            try {
+                                int totalPage = Integer.parseInt(jsonObject.optJSONObject("channel").optString("pageCount"));
+                                if (totalPage <= mPage) {
+                                    isLast = true;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        showImageList(new SearchParser().getICModelList(jsonObject.optJSONObject("channel").optJSONArray("item"), mSortType, isLast), isRefresh);
                     } else {
                         showEmptyView();
                     }
                 }
             }
         });
-        mImageSearchTask.execute(keyword, mPage, mSortType);
+        mImageSearchTask.execute(mQuery, mPage, mSortType);
+    }
+
+    @Override
+    protected void showEmptyView() {
+        if (mSearchAdater.getList() == null || mSearchAdater.getList().size() == 0) {
+            super.showEmptyView();
+        }
     }
 
     @Override
@@ -104,5 +128,12 @@ public class SearchFragment extends BaseFragment {
     @Override
     public void onLongClick(View view, Image image) {
 
+    }
+
+    @Override
+    public void onRequestMore() {
+        mPage++;
+        mSearchAdater.getList().remove(mSearchAdater.getItemCount() - 1);
+        executeSearch(false);
     }
 }

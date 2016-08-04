@@ -12,6 +12,7 @@ import com.android.hyoonseol.imagecollector.model.Image;
 import com.android.hyoonseol.imagecollector.model.ViewType;
 import com.android.hyoonseol.imagecollector.viewholder.ContentViewHolder;
 import com.android.hyoonseol.imagecollector.viewholder.DateViewHolder;
+import com.android.hyoonseol.imagecollector.viewholder.MoreViewHolder;
 
 import org.json.JSONObject;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * Created by Administrator on 2016-07-31.
  */
 
-public class SearchAdapter extends RecyclerView.Adapter {
+public class ICAdapter extends RecyclerView.Adapter {
 
     public interface OnImgClickListener {
         void onClick(View view, Image image);
@@ -31,16 +32,22 @@ public class SearchAdapter extends RecyclerView.Adapter {
         void onLongClick(View view, Image image);
     }
 
+    public interface OnMoreListener {
+        void onRequestMore();
+    }
+
     private Context mContext;
     private List<ICModel> mICModelList;
     private OnImgClickListener mImgClickListener;
     private OnImgLongClickListener mImgLongClickListener;
+    private OnMoreListener mMoreListener;
 
-    public SearchAdapter(Context context, List<ICModel> ICModelList, OnImgClickListener imgClickListener, OnImgLongClickListener imgLongClickListener) {
+    public ICAdapter(Context context, List<ICModel> ICModelList, OnImgClickListener imgClickListener, OnImgLongClickListener imgLongClickListener, OnMoreListener moreListener) {
         mContext = context;
         mICModelList = ICModelList;
         mImgClickListener = imgClickListener;
         mImgLongClickListener = imgLongClickListener;
+        mMoreListener = moreListener;
     }
 
     public void setList(List<ICModel> ICModelList) {
@@ -60,6 +67,8 @@ public class SearchAdapter extends RecyclerView.Adapter {
         } else if (viewType == ViewType.CONTENT.ordinal()) {
             viewHolder = new ContentViewHolder(mContext, LayoutInflater.from(mContext).inflate(R.layout.view_recycler_item_content, null)
                                                 ,mImgClickListener, mImgLongClickListener);
+        } else if (viewType == ViewType.MORE.ordinal()) {
+            viewHolder = new MoreViewHolder(LayoutInflater.from(mContext).inflate(R.layout.view_recycler_item_more, null));
         }
         return viewHolder;
     }
@@ -70,6 +79,8 @@ public class SearchAdapter extends RecyclerView.Adapter {
             ((DateViewHolder)holder).onBindViewHolder(mICModelList.get(position).getDate());
         } else if (holder instanceof ContentViewHolder) {
             ((ContentViewHolder)holder).onBindViewHolder(mICModelList.get(position).getImageList());
+        } else if (holder instanceof MoreViewHolder) {
+            ((MoreViewHolder)holder).onBindViewHolder(mMoreListener);
         }
     }
 

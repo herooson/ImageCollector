@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,6 +64,7 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 
     private void setViews() {
         mToolbar = (Toolbar) findViewById(R.id.toolBar);
+        mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
 
         mImage = (PhotoView) findViewById(R.id.pv_image);
@@ -129,7 +129,7 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
         boolean result = false;
         FileOutputStream out = null;
         try {
-            File file = new File(ICUtils.getImageFolderPath() + "/" + ICUtils.removeHtmlTag(title) + ".jpg");
+            File file = new File(ICUtils.getImageFolderPath() + "/" + title + ".jpg");
             out = new FileOutputStream(file.getAbsolutePath());
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             result = true;

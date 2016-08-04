@@ -11,5 +11,5 @@ import java.util.List;
 public interface IParser {
     int NUM_ROW_ITEM = 3;
 
-    List<ICModel> getICModelList(Object object, String sortType);
+    List<ICModel> getICModelList(Object object, String sortType, boolean isLast);
 }

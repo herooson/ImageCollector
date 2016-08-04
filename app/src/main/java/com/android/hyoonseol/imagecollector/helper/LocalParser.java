@@ -1,12 +1,8 @@
 package com.android.hyoonseol.imagecollector.helper;
 
-import com.android.hyoonseol.imagecollector.api.BaseApi;
 import com.android.hyoonseol.imagecollector.model.ICModel;
 import com.android.hyoonseol.imagecollector.model.Image;
 import com.android.hyoonseol.imagecollector.model.ViewType;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +15,7 @@ import java.util.List;
 public class LocalParser implements IParser {
 
     @Override
-    public List<ICModel> getICModelList(Object object, String sortType) {
+    public List<ICModel> getICModelList(Object object, String sortType, boolean isLast) {
         List<ICModel> ICModelList = null;
 
         if (object != null && object instanceof File[]) {
@@ -35,7 +31,7 @@ public class LocalParser implements IParser {
 
                     if ((i + 1) % NUM_ROW_ITEM == 0 || (i + 1) == fileArray.length) {
                         //TODO
-//                        if (sortType.equals(BaseApi.SORT_DATE)) {
+//                        if (sortType.equals(ICApi.SORT_DATE)) {
 //                            String itemDate = jsonObject.optString("pubDate").substring(0, 8);
 //                            if (!date.equals(itemDate)) {
 //                                ICModelList.add(new ICModel(ViewType.DATE, itemDate));

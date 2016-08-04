@@ -12,12 +12,14 @@
         <RelativeLayout
             android:id="@+id/lay_function"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
             <android.support.v7.widget.SearchView
                 android:id="@+id/sv_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:queryHint="검색어를 입력하세요."
                 android:layout_marginLeft="10dp"
                 android:layout_toLeftOf="@+id/btn_sort" />
 
@@ -47,5 +49,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout="@layout/viewstub_empty"/>
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
 </FrameLayout>

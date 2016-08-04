@@ -1,9 +1,8 @@
 package com.android.hyoonseol.imagecollector.task;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
-import com.android.hyoonseol.imagecollector.api.BaseApi;
+import com.android.hyoonseol.imagecollector.api.ICApi;
 
 /**
  * Created by Administrator on 2016-07-30.
@@ -26,7 +25,7 @@ public class ImageSearchTask extends BaseAsyncTask {
 
         String keyword = (String)objects[0];
         int page = 1;
-        String sortType = BaseApi.SORT_ACCU;
+        String sortType = ICApi.SORT_ACCU;
 
         if (objects.length > 1) {
             page = (int)objects[1];
@@ -35,6 +34,6 @@ public class ImageSearchTask extends BaseAsyncTask {
                 sortType = (String)objects[2];
             }
         }
-        return new BaseApi(mContext).getSearchResult(keyword, page, sortType);
+        return new ICApi(mContext).getSearchResult(keyword, page, sortType);
     }
 }

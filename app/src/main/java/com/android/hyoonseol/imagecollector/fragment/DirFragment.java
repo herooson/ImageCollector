@@ -2,11 +2,6 @@ package com.android.hyoonseol.imagecollector.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +9,15 @@ import android.widget.Toast;
 
 import com.android.hyoonseol.imagecollector.ImageActivity;
 import com.android.hyoonseol.imagecollector.R;
-import com.android.hyoonseol.imagecollector.api.BaseApi;
+import com.android.hyoonseol.imagecollector.api.ICApi;
 import com.android.hyoonseol.imagecollector.helper.LocalParser;
 import com.android.hyoonseol.imagecollector.model.Image;
 import com.android.hyoonseol.imagecollector.util.FileCompare;
 import com.android.hyoonseol.imagecollector.util.ICUtils;
+import com.android.hyoonseol.imagecollector.util.Log;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
-
-import static android.R.attr.path;
 
 /**
  * Created by Administrator on 2016-07-29.
@@ -37,7 +29,8 @@ public class DirFragment extends BaseFragment {
 
     @Override
     protected void setSortType() {
-        mSortType = BaseApi.SORT_DATE;
+        mSortType = ICApi.SORT_DATE;
+        setSort("날짜순");
     }
 
     @Override
@@ -48,6 +41,7 @@ public class DirFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        showProgress(View.VISIBLE);
         loadImageFileList(false);
     }
 
@@ -56,14 +50,18 @@ public class DirFragment extends BaseFragment {
         File[] fileArray = dir.listFiles();
 
         if (fileArray == null || fileArray.length == 0) {
+            showProgress(View.GONE);
             showEmptyView();
         } else {
-            if (mSortType == BaseApi.SORT_NAME) {
+            if (mSortType == ICApi.SORT_NAME) {
+                showProgress(View.GONE);
                 //TODO.
-            } else if (mSortType == BaseApi.SORT_DATE) {
+            } else if (mSortType == ICApi.SORT_DATE) {
                 fileArray = sortDate(fileArray);
-                showImageList(new LocalParser().getICModelList(fileArray, mSortType), isRefresh);
+                showProgress(View.GONE);
+                showImageList(new LocalParser().getICModelList(fileArray, mSortType, true), isRefresh);
             } else {
+                showProgress(View.GONE);
                 showEmptyView();
             }
 //              fileArray[i].getTotalSpace()    // TODO. 파일 용량
@@ -108,6 +106,11 @@ public class DirFragment extends BaseFragment {
 
     @Override
     public void onLongClick(View view, Image image) {
+
+    }
+
+    @Override
+    public void onRequestMore() {
 
     }
 }

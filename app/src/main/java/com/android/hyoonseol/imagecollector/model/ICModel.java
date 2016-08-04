@@ -15,6 +15,10 @@ public class ICModel {
     private String mDate;
     private List<Image> mImageList;
 
+    public ICModel(ViewType viewType) {
+        mViewType = viewType;
+    }
+
     public ICModel(ViewType viewType, String date) {
         mViewType = viewType;
         mDate = date;

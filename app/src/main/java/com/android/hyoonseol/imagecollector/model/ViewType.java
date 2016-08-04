@@ -5,5 +5,5 @@ package com.android.hyoonseol.imagecollector.model;
  */
 
 public enum ViewType {
-    DATE, CONTENT
+    DATE, CONTENT, MORE
 }

@@ -9,10 +9,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.android.hyoonseol.imagecollector.fragment.DirFragment;
 import com.android.hyoonseol.imagecollector.fragment.SearchFragment;
+import com.android.hyoonseol.imagecollector.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
