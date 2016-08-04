@@ -5,6 +5,7 @@ import android.content.Context;
 import com.android.hyoonseol.imagecollector.api.ICApi;
 
 /**
+ * 이미지 검색 AsyncTask
  * Created by Administrator on 2016-07-30.
  */
 

@@ -3,6 +3,7 @@ package com.android.hyoonseol.imagecollector.util;
 import java.io.File;
 
 /**
+ * 파일 날짜 비교 매니저
  * Created by Administrator on 2016-08-03.
  */
 
@@ -18,7 +19,7 @@ public class FileCompare implements Comparable {
 
     public int compareTo(Object object) {
         long time = ((FileCompare) object).mTime;
-        return mTime < time ? -1 : mTime == time ? 0 : 1;
+        return mTime > time ? -1 : mTime == time ? 0 : 1;
     }
 
     public File getFile() {

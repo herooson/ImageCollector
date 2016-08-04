@@ -3,6 +3,7 @@ package com.android.hyoonseol.imagecollector.viewholder;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.android.hyoonseol.imagecollector.R;
@@ -15,6 +16,7 @@ import com.android.hyoonseol.imagecollector.view.ICImageView;
 import java.util.List;
 
 /**
+ * 이미지 컨터이너가 포함되는 뷰홀더
  * Created by Administrator on 2016-07-31.
  */
 
@@ -28,6 +30,7 @@ public class ContentViewHolder extends RecyclerView.ViewHolder {
 
     public ContentViewHolder(Context context, View itemView, ICAdapter.OnImgClickListener imgClickListener, ICAdapter.OnImgLongClickListener imgLongClickListener) {
         super(itemView);
+        itemView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mDisplayWidth = ICUtils.getDisPlayWidth(context);
 
         mImage1 = (ICImageView)itemView.findViewById(R.id.ic_image1);

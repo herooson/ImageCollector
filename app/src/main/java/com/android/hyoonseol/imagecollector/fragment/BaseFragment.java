@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.android.hyoonseol.imagecollector.util.ICUtils;
 import java.util.List;
 
 /**
+ * 프래그먼트 공통 부분을 포함하는 부모프래그먼트
  * Created by Administrator on 2016-08-03.
  */
 
@@ -65,10 +67,25 @@ public abstract class BaseFragment extends Fragment implements IFragment, ICAdap
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mProg = view.findViewById(R.id.pb_loading);
         mSort = (Button)view.findViewById(R.id.btn_sort);
+        mSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+                popupMenu.getMenuInflater().inflate(getMenuId(), popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(getMenuItemClickListener());
+                popupMenu.show();
+            }
+        });
     }
 
+    protected abstract int getMenuId();
+
+    protected abstract PopupMenu.OnMenuItemClickListener getMenuItemClickListener();
+
     protected void showProgress(int visibility) {
-        mProg.setVisibility(visibility);
+        if (mProg != null) {
+            mProg.setVisibility(visibility);
+        }
     }
 
     protected void showImageList(List<ICModel> ICModelList, boolean isRefresh) {
@@ -95,6 +112,12 @@ public abstract class BaseFragment extends Fragment implements IFragment, ICAdap
                 }
             });
             mEmptyVIewStub.inflate();
+        }
+    }
+
+    protected void hideEmptyView() {
+        if (mEmptyView != null) {
+            mEmptyView.setVisibility(View.GONE);
         }
     }
 }

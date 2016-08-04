@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
+ * SharedPreferences 매니저
  * Created by Administrator on 2016-08-04.
  */
 

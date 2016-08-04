@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * 서버와의 api 통신을 담당
  * Created by Administrator on 2016-07-30.
  */
 
@@ -120,6 +121,9 @@ public class ICApi {
     }
 
     private void saveCacheFile(String fileName, JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return;
+        }
         try {
             File file = new File(mContext.getCacheDir(), fileName);
             if (!file.exists()) {

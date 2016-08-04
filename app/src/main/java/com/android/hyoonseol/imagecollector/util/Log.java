@@ -1,6 +1,7 @@
 package com.android.hyoonseol.imagecollector.util;
 
 /**
+ * 로그 매니저
  * Created by Administrator on 2016-08-04.
  */
 

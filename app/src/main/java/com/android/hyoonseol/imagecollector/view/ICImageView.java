@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import org.json.JSONObject;
 
 /**
+ * 리스트에 노출되는 이미지 컨테이너 뷰
  * Created by Administrator on 2016-07-31.
  */
 

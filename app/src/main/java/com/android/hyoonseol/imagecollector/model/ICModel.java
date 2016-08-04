@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 /**
+ * 리스트 아답터에 전달하기 위한 데이터 모델
  * Created by Administrator on 2016-07-31.
  */
 

@@ -5,6 +5,7 @@ import com.android.hyoonseol.imagecollector.model.ICModel;
 import java.util.List;
 
 /**
+ * 데이터 파서 인터페이스
  * Created by Administrator on 2016-08-03.
  */
 

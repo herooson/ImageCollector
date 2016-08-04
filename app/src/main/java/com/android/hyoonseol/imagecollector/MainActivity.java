@@ -14,6 +14,9 @@ import com.android.hyoonseol.imagecollector.fragment.DirFragment;
 import com.android.hyoonseol.imagecollector.fragment.SearchFragment;
 import com.android.hyoonseol.imagecollector.util.Log;
 
+/**
+ * 메인 화면
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";

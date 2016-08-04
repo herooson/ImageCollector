@@ -2,9 +2,13 @@ package com.android.hyoonseol.imagecollector.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.hyoonseol.imagecollector.ImageActivity;
@@ -20,6 +24,7 @@ import java.io.File;
 import java.util.Arrays;
 
 /**
+ * 보관함 프래그먼트
  * Created by Administrator on 2016-07-29.
  */
 
@@ -27,10 +32,11 @@ public class DirFragment extends BaseFragment {
 
     private static final String TAG = "DirFragment";
 
+    private TextView mInfo;
+
     @Override
     protected void setSortType() {
         mSortType = ICApi.SORT_DATE;
-        setSort("날짜순");
     }
 
     @Override
@@ -41,6 +47,8 @@ public class DirFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mInfo = (TextView)view.findViewById(R.id.tv_info);
+        setSort("날짜순");
         showProgress(View.VISIBLE);
         loadImageFileList(false);
     }
@@ -49,23 +57,54 @@ public class DirFragment extends BaseFragment {
         File dir = new File(ICUtils.getImageFolderPath());
         File[] fileArray = dir.listFiles();
 
-        if (fileArray == null || fileArray.length == 0) {
+        if (fileArray == null || fileArray.length == 0 || mSortType == null || TextUtils.isEmpty(mSortType)) {
             showProgress(View.GONE);
             showEmptyView();
+
         } else {
+            showProgress(View.GONE);
+
             if (mSortType == ICApi.SORT_NAME) {
-                showProgress(View.GONE);
-                //TODO.
+                fileArray = sortName(fileArray);
             } else if (mSortType == ICApi.SORT_DATE) {
                 fileArray = sortDate(fileArray);
-                showProgress(View.GONE);
-                showImageList(new LocalParser().getICModelList(fileArray, mSortType, true), isRefresh);
-            } else {
-                showProgress(View.GONE);
-                showEmptyView();
             }
-//              fileArray[i].getTotalSpace()    // TODO. 파일 용량
+            hideEmptyView();
+            setInfo(fileArray.length, getTotalSize(fileArray));
+            showImageList(new LocalParser().getICModelList(fileArray, mSortType, true), isRefresh);
         }
+    }
+
+    private long getTotalSize(File[] fileArray) {
+        long size = 0;
+        for (File file: fileArray) {
+            size += file.length();
+        }
+        return size;
+    }
+
+    private void setInfo(int num, long size) {
+        mInfo.setText("총 " + num + " 개  총 " + (size / 1000) + " Kb");
+    }
+
+    private File[] sortName(File[] fileArray) {
+        File[] fileCompareArray = new File[fileArray.length];
+        String[] fileNameArray = new String[fileArray.length];
+        
+        for (int i = 0; i < fileArray.length; i++) {
+            fileNameArray[i] = fileArray[i].getName();
+        }
+        Arrays.sort(fileNameArray);
+
+        for (int i = 0; i < fileNameArray.length; i++) {
+            for (int j = 0; j < fileArray.length; j++) {
+                if (fileNameArray[i].equals(fileArray[j].getName())) {
+                    fileCompareArray[i] = fileArray[j];
+                    break;
+                }
+            }
+        }
+        return fileCompareArray;
     }
 
     private File[] sortDate(File[] fileArray) {
@@ -93,6 +132,30 @@ public class DirFragment extends BaseFragment {
             }
             loadImageFileList(true);
         }
+    }
+
+    @Override
+    protected int getMenuId() {
+        return R.menu.local;
+    }
+
+    @Override
+    protected PopupMenu.OnMenuItemClickListener getMenuItemClickListener() {
+        return new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                if (id == R.id.date) {
+                    mSortType = ICApi.SORT_DATE;
+                    setSort("날짜순");
+                } else if (id == R.id.name) {
+                    mSortType = ICApi.SORT_NAME;
+                    setSort("이름순");
+                }
+                loadImageFileList(true);
+                return true;
+            }
+        };
     }
 
     @Override

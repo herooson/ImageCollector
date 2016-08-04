@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 /**
+ * 프래그먼트에서 사용하는 리사이클러 아답터
  * Created by Administrator on 2016-07-31.
  */
 

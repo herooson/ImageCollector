@@ -3,6 +3,7 @@ package com.android.hyoonseol.imagecollector.task;
 import android.os.AsyncTask;
 
 /**
+ * AsyncTask 확장
  * Created by Administrator on 2016-07-30.
  */
 

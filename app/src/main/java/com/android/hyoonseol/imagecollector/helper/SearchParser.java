@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 이미지리스트 데이터 파서
  * Created by Administrator on 2016-07-31.
  */
 
@@ -32,16 +33,25 @@ public class SearchParser implements IParser {
                 List<Image> imageList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.optJSONObject(i);
+
+                    // 날짜 순인 경우 헤더뷰 추가
+                    if (sortType.equals(ICApi.SORT_DATE)) {
+                        String itemDate = jsonObject.optString("pubDate").substring(0, 8);
+                        if (!date.equals(itemDate)) {
+                            // 기존 날짜까지의 데이터는 별도로 추가
+                            if (imageList != null && imageList.size() > 0) {
+                                ICModelList.add(new ICModel(ViewType.CONTENT, imageList));
+                                imageList = new ArrayList<>();
+                            }
+                            ICModelList.add(new ICModel(ViewType.DATE, itemDate));
+                            date = itemDate;
+                        }
+                    }
+
                     String title = ICUtils.removeHtmlTag(jsonObject.optString("title"));
                     imageList.add(new Image(title, jsonObject.optString("image")));
 
-                    if ((i + 1) % NUM_ROW_ITEM == 0 || (i + 1) == jsonArray.length()) {
-                        if (sortType.equals(ICApi.SORT_DATE)) {
-                            String itemDate = jsonObject.optString("pubDate").substring(0, 8);
-                            if (!date.equals(itemDate)) {
-                                ICModelList.add(new ICModel(ViewType.DATE, itemDate));
-                            }
-                        }
+                    if (imageList.size() == NUM_ROW_ITEM || (i + 1) == jsonArray.length()) {
                         ICModelList.add(new ICModel(ViewType.CONTENT, imageList));
                         imageList = new ArrayList<>();
                     }

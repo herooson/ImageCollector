@@ -1,11 +1,16 @@
 package com.android.hyoonseol.imagecollector;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.text.ICUCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,19 +25,25 @@ import com.android.hyoonseol.imagecollector.fragment.IFragment;
 import com.android.hyoonseol.imagecollector.util.ICUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.Permission;
+import java.security.Permissions;
 
 import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by Administrator on 2016-07-29.
+ * 이미지 상세 화면
  */
 
 public class ImageActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final int REQUEST_WRITE_STORAGE = 3087;
 
     public static final String EXTRA_TITLE = "title";
     public static final String EXTRA_IMG_URL = "img_url";
@@ -40,7 +51,6 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 
     private Toolbar mToolbar;
     private PhotoView mImage;
-    private View mLayMenu;
     private Button mBtn;
 
     private boolean mIsLocal;
@@ -68,7 +78,6 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
         setSupportActionBar(mToolbar);
 
         mImage = (PhotoView) findViewById(R.id.pv_image);
-        mLayMenu = findViewById(R.id.rl_menu);
         mBtn = (Button)findViewById(R.id.btn_menu);
 
         setMenu();
@@ -106,12 +115,45 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "이미지 삭제를 실패하였습니다." , Toast.LENGTH_SHORT).show();
                 }
             } else {
-                if (saveBitmap(((GlideBitmapDrawable)mImage.getDrawable()).getBitmap(), mTitle)) {
-                    Toast.makeText(getApplicationContext(), "이미지가 저장되었습니다." , Toast.LENGTH_SHORT).show();
-                    setResult(IFragment.RESULT_LOCAL_SAVE);
-                } else {
-                    Toast.makeText(getApplicationContext(), "이미지 저장을 실패하였습니다." , Toast.LENGTH_SHORT).show();
+                if (checkStoragePermission()) {
+                    requestSaveBitmap();
                 }
+            }
+        }
+    }
+
+    private void requestSaveBitmap() {
+        try {
+            if (mImage.getDrawable() instanceof GifDrawable) {
+                Toast.makeText(getApplicationContext(), "gif 포맷은 지원하지 않습니다.", Toast.LENGTH_SHORT).show();
+            } else if (saveBitmap(((GlideBitmapDrawable) mImage.getDrawable()).getBitmap(), mTitle)) {
+                Toast.makeText(getApplicationContext(), "이미지가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                setResult(IFragment.RESULT_LOCAL_SAVE);
+            } else {
+                Toast.makeText(getApplicationContext(), "이미지 저장을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "이미지 저장을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean checkStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_WRITE_STORAGE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                requestSaveBitmap();
+            } else {
+                Toast.makeText(getApplicationContext(), "저장 권한이 있어야 이미지를 저장할 수 있습니다.", Toast.LENGTH_SHORT).show();
             }
         }
     }

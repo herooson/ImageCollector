@@ -11,6 +11,14 @@
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:text="두 손가락으로 확대해 보세요."/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -1,6 +1,7 @@
 package com.android.hyoonseol.imagecollector.model;
 
 /**
+ * 이미지 기본 정보를 포함하는 데이터 모델
  * Created by Administrator on 2016-08-03.
  */
 

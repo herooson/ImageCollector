@@ -12,10 +12,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 유틸
  * Created by Administrator on 2016-07-31.
  */
 
 public class ICUtils {
+
+    private static final char[] firstSounds = {
+            'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ',
+            'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ',
+            'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+    };
+
+    private static boolean isHangul(char c) {
+        if (c < 0xAC00 || c > 0xD7A3) {
+            return false;
+        }
+        return true;
+    }
+
+    public static char getFirstElement(char c) {
+        if (!isHangul(c)) {
+            return c;
+        }
+        return firstSounds[(c - 0xAC00) / (21 * 28)];
+    }
 
     public static List<ICModel> concatList(List<ICModel>... arrs) {
         List<ICModel> result = new ArrayList<>();
