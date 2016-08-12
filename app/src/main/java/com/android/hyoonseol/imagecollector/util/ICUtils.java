@@ -65,7 +65,7 @@ public class ICUtils {
     }
 
     public static String removeHtmlTag(String str) {
-        str = Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY).toString();
+        str = Html.fromHtml(str).toString();
         return str.replaceAll("\\<[^>]*>","");
     }
 }

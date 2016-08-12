@@ -19,9 +19,11 @@ import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,33 +68,37 @@ public class ICApi {
     public JSONObject getSearchResult(String keyword, int page, String sortType) {
         JSONObject jsonObject = null;
 
-        Map<String, String> params = new HashMap<>();
-        params.put("apikey", mContext.getResources().getString(R.string.api_key));
-        params.put("q", keyword);
-        params.put("result", DEFAULT_SIZE);
-        params.put("pageno", page + "");
-        params.put("sort", sortType);
-        params.put("output", OUTPUT_JSON);
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("apikey", mContext.getResources().getString(R.string.api_key));
+            params.put("q", URLEncoder.encode(keyword, "utf-8"));
+            params.put("result", DEFAULT_SIZE);
+            params.put("pageno", page + "");
+            params.put("sort", sortType);
+            params.put("output", OUTPUT_JSON);
 
-        String url = getUrl(API, SEARCH, params);
-        File cacheFile = new File(mContext.getCacheDir(), url.replace("/", ""));
-        if (cacheFile.exists()) {
-            long cacheTime = cacheFile.lastModified();
-            // 10분 단위 캐시
-            cacheTime += 1000 * 60 * 10;
-            if (cacheTime > System.currentTimeMillis()) {
-                jsonObject = loadCacheFile(cacheFile);
-                Log.d(TAG, "api cache valid time = " + new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(cacheTime)));
+            String url = getUrl(API, SEARCH, params);
+            File cacheFile = new File(mContext.getCacheDir(), url.replace("/", ""));
+            if (cacheFile.exists()) {
+                long cacheTime = cacheFile.lastModified();
+                // 10분 단위 캐시
+                cacheTime += 1000 * 60 * 10;
+                if (cacheTime > System.currentTimeMillis()) {
+                    jsonObject = loadCacheFile(cacheFile);
+                    Log.d(TAG, "api cache valid time = " + new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(cacheTime)));
+                }
             }
-        }
 
-        if (jsonObject == null) {
-            try {
-                jsonObject = getHttpResponse(new URL(url));
-                saveCacheFile(url.replace("/", ""), jsonObject);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+            if (jsonObject == null) {
+                try {
+                    jsonObject = getHttpResponse(new URL(url));
+                    saveCacheFile(url.replace("/", ""), jsonObject);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (UnsupportedEncodingException ue) {
+            ue.printStackTrace();
         }
         return  jsonObject;
     }
